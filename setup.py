@@ -8,5 +8,5 @@ setup(name='Pipeline',
       author_email='vcassen@systemsbiology.org',
       url='https://github.com/phonybone/Pipeline',
       packages=['Pipeline'],
-      package_data={'Pipeline': ['config/logging.conf']},
+      package_data={'Pipeline': ['config/logging.conf', 'config/hosts.conf']},
 )

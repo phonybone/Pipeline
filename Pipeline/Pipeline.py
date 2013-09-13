@@ -2,7 +2,7 @@ import os, tempfile, logging
 from .exceptions import *
 
 config_file=os.path.abspath(os.path.join(os.path.dirname(__file__), 'config', 'logging.conf'))
-print 'config_file is %s' % config_file
+import logging.config
 logging.config.fileConfig(config_file,
                           disable_existing_loggers=False,
                           )

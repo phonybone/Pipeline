@@ -7,13 +7,12 @@ class Host(object):
     def __init__(self, config_file=None, hostname=None):
         self.config=ConfigParser()
         if not config_file:
-            root_dir=os.path.abspath(os.path.join(os.path.dirname(__file__),'..','..', '..'))
-            fn=os.path.join(root_dir, 'config', 'hosts.conf')
-            print 'fn is %s' % fn
-            self.config.read(fn)
-        else:
-            self.config.read(config_file)
-
+            root_dir=os.path.abspath(os.path.join(os.path.dirname(__file__)))
+            config_file=os.path.join(root_dir, 'config', 'hosts.conf')
+            
+        if not os.path.exists(config_file):
+            raise RuntimeError('%s does not exist' % config_file)
+        self.config.read(config_file)
 
         if hostname and not self.config.has_section(hostname):
             raise NoSectionError(hostname)
@@ -24,7 +23,7 @@ class Host(object):
                     break
             try:
                 self.hostname
-            except AttributeError:
+            except AttributeError, e:
                 hn=hostname if hostname else 'localhost (%s)' % gethostname()
                 raise NoSectionError(hn)
 
