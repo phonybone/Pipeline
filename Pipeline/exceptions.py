@@ -19,3 +19,7 @@ class PipelineFailed(PipelineException):
 class CmdFailed(PipelineException):
     def __init__(self, run_cmd):
         self.run_cmd=run_cmd
+
+class ContinuityError(PipelineException):
+    def __init__(self, pipeline):
+        super(Exception, self).__init__(self, "Pipeline %s: continuity graph is not connected" % pipeline.name)
