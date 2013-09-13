@@ -132,3 +132,5 @@ class RunCmd(object):
         ''' return the name of the file to which to redirect stderr '''
         return self.__get_output_fn('stderr')
 
+    def inputs(self): return []
+    def outputs(self): return []
