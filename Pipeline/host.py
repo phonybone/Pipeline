@@ -1,9 +1,11 @@
-import sys, os
+import sys, os, logging
 from ConfigParser import ConfigParser
 from ConfigParser import NoSectionError
 from socket import gethostname
 
 class Host(object):
+    log=logging.getLogger('Pipeline')
+
     def __init__(self, config_file=None, hostname=None):
         self.config=ConfigParser()
         if not config_file:
@@ -28,6 +30,7 @@ class Host(object):
                 raise NoSectionError(hn)
         else:
             self.hostname=hostname
+        self.log.debug('host.hostname: %s' % self.hostname)
 
     def __str__(self):
         return self.hostname
@@ -55,6 +58,11 @@ class Host(object):
         # return entire environ:
         environ={}
         for key in [key for key in self.config.options(self.hostname) if key.startswith('environ.')]:
+            # stupid bug/feature in ConfigParser lower-cases all keys
+            # work-around is to add '.upper' to key value when needed
             key2='.'.join(key.split('.')[1:])
+            if key2.endswith('upper'):
+                key2='.'.join(key2.split('.')[:1]).upper()
+
             environ[key2]=self.get(key)
         return environ

@@ -80,13 +80,16 @@ class RunCmd(object):
         return ' '.join(stuff)
 
     def _build_environ(self):
-        try: env=self.get_envrion()
-        except AttributeError: env={}
+        try: env=self.get_environ()
+        except AttributeError, e: 
+            self.log.debug('caught %s' % e)
+            env={}
         env.update({'HOME':os.environ['HOME'],
                     'USER':os.environ['USER'],
                     })
 
         env.update(self.pipeline.host.environ())
+        self.log.debug('%s: _build_env returning %s' % (self.name, env))
         return env
 
 #    def outputs(self):
