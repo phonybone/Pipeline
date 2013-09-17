@@ -16,7 +16,7 @@ class Host(object):
 
         if hostname and not self.config.has_section(hostname):
             raise NoSectionError(hostname)
-        else: 
+        elif not hostname: 
             for hn in [gethostname(), gethostname().split('.')[0]]:
                 if self.config.has_section(hn):
                     self.hostname=hn
@@ -26,10 +26,11 @@ class Host(object):
             except AttributeError, e:
                 hn=hostname if hostname else 'localhost (%s)' % gethostname()
                 raise NoSectionError(hn)
+        else:
+            self.hostname=hostname
 
     def __str__(self):
         return self.hostname
-
 
     # trying to figure out how to wrap self.config functions, but also use
     # a decorator to give them an extra section argument...  All without
@@ -41,3 +42,19 @@ class Host(object):
 
     def set(self, key, value):
         return self.config.set(self.hostname, key, str(value)) # configparser only "likes" strings
+
+    def environ(self, key=None):
+        '''
+        if key != None: attempt to do a lookup in the host section for any key named
+          'environ.%s' % key
+        if key == None: return a dict composed of all k/v pairs where k starts with 'environ.'
+        '''
+        if key:
+            return self.config.get(self.hostname, 'environ.%s' % key)
+
+        # return entire environ:
+        environ={}
+        for key in [key for key in self.config.options(self.hostname) if key.startswith('environ.')]:
+            key2='.'.join(key.split('.')[1:])
+            environ[key2]=self.get(key)
+        return environ

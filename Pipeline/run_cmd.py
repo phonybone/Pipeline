@@ -86,6 +86,7 @@ class RunCmd(object):
                     'USER':os.environ['USER'],
                     })
 
+        env.update(self.pipeline.host.environ())
         return env
 
 #    def outputs(self):
